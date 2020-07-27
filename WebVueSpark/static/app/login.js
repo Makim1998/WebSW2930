@@ -26,22 +26,7 @@ Vue.component("login", {
 ` 
 		,
 	mounted() {
-		axios
-	    .get('rest/login/getUser')
-	    .then((response) => {
-			if(response.data.uloga == "SUPER_ADMIN"){
-				console.log("Ulogovao se super admin");
-				//this.$router.replace({ name: "pacijentHome" });
-			}
-			else if(response.data.uloga== "ADMIN"){
-				console.log("Ulogovao se admin");
-				//this.$router.replace({ name: "administratorKlinike" });
-			}
-			else{
-				console.log("Ulogovao se korisnik");
-				//this.$router.replace({ name: "MSHome" }) 
-			}	
-		});
+
 	    },
 	methods : {
 		login() {

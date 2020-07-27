@@ -71,8 +71,8 @@ Vue.component('homepage',{
 	methods : {
 		odjava() {
         	axios
-        	.get('rest/login/odjava')
-			.then(response => this.$router.replace({ name: "login" }));
+        	.get('rest/odjava')
+			.then(response => this.$router.push("/"));
         }
 	},
 	mounted() {

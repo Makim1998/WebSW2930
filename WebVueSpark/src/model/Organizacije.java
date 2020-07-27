@@ -29,6 +29,10 @@ public class Organizacije {
 		organizacije = new ArrayList<Organizacija>();
 	}
 	
+	public Organizacije(String path) {
+		this.path = path;
+		readFile();
+	}
 	
 	public Organizacija getOrganizacija(String ime) {
 		for(Organizacija o : organizacije) {
