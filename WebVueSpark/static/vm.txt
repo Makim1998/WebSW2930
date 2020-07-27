@@ -1,0 +1,32 @@
+[
+  {
+    "ime": "VM1",
+    "organizacija": "Google",
+    "kategorija": "A1",
+    "brojJezgara": 8,
+    "RAM": 64,
+    "GPU": 4,
+    "diskovi": [
+      "disk1"
+    ],
+    "aktivnosti": [
+      "1580646784436-off",
+      "1580647026890-on"
+    ]
+  },
+  {
+    "ime": "VM2",
+    "organizacija": "Amazon",
+    "kategorija": "A2",
+    "brojJezgara": 8,
+    "RAM": 32,
+    "GPU": 4,
+    "diskovi": [
+      "disk2"
+    ],
+    "aktivnosti": [
+      "1580646886208-off",
+      "1580646983985-on"
+    ]
+  }
+]
