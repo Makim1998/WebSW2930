@@ -5,6 +5,15 @@ public class OrganizacijaIzmena {
 	public String ime;
 	public String opis;
 	public String logo;
+	
+	
+	public OrganizacijaIzmena(String staro, String ime, String opis, String logo) {
+		super();
+		this.staro = staro;
+		this.ime = ime;
+		this.opis = opis;
+		this.logo = logo;
+	}
 	public String getStaro() {
 		return staro;
 	}

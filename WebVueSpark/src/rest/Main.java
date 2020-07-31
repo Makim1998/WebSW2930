@@ -1,24 +1,32 @@
 package rest;
 
 import static spark.Spark.get;
-import static spark.Spark.post;
 import static spark.Spark.halt;
-
 import static spark.Spark.port;
+import static spark.Spark.post;
 import static spark.Spark.staticFiles;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import javax.servlet.MultipartConfigElement;
+import javax.servlet.http.Part;
 
 import com.google.gson.Gson;
 
 import json.KategorijaIzmena;
+import json.OrganizacijaIzmena;
 import model.KategorijaVM;
 import model.Kategorije;
 import model.Korisnici;
 import model.Korisnik;
+import model.Organizacija;
 import model.Organizacije;
 import model.Uloga;
+import spark.utils.IOUtils;
 
 public class Main {
 	public static Korisnici korisnici;
@@ -222,6 +230,85 @@ public class Main {
 			//organizacije = new Organizacije(path + "\\organizacije.txt");
 			return g.toJson(organizacije);
 		});
+		
+		post("rest/addOrganizacija",(req,res) ->{
+			res.type("application/json");
+			String payload = req.body();
+			Organizacija o = g.fromJson(payload, Organizacija.class);
+			if(ulogovan == null || ulogovan.uloga == Uloga.KORISNIK) {
+				System.out.println("Forbiden!");
+				halt(403, "Nemate pravo pristupa!");
+			}
+			if(o == null) {
+				System.out.println("Nije validan zahtev!");
+				halt(400, "Nije validan zahtev!");
+			}
+			if (organizacije.getOrganizacija(o.getIme()) != null) {
+				System.out.println("Ime je zauzeto!");
+				halt(400, "Ime je zauzeto!");
+			}
+			else  {
+				organizacije.dodaj(o);
+			}
+			return ("OK");
+		});
+		
+		post("rest/izmeniOrganizacija", (req,res) ->{
+			res.type("application/json");
+			String payload = req.body();
+			System.out.println(payload);
+			OrganizacijaIzmena o = g.fromJson(payload, OrganizacijaIzmena.class);
+			System.out.println(o);
+			if (o == null) {
+				System.out.println("Nije validan zahtev!");
+				halt(400, "Nije validan zahtev!");
+			}
+			String staro = o.getStaro();
+			System.out.println("za izmenu");
+			System.out.println(staro);
+			if(ulogovan == null || ulogovan.uloga == Uloga.KORISNIK) {
+				System.out.println("Forbiden!");
+				halt(403, "Nemate pravo pristupa!");
+			}
+			if (organizacije.getOrganizacija(staro) == null) {
+				System.out.println("Ne postoji organizacija!");
+				halt(400, "Ne postoji organizacija!");
+			}
+			if (organizacije.getOrganizacija(o.getIme()) != null) {
+				System.out.println("Ime vec postoji!");
+				halt(400, "Ime vec postoji!");
+			}
+			else  {
+				organizacije.izmeni(o);
+			}
+			return ("OK");
+		});
+		
+		post("/api/upload", (req, res) -> {
+            req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement(path + "\\slike\\"));
+            Part filePart = req.raw().getPart("myfile");
+            System.out.println("upload");
+            try (InputStream inputStream = filePart.getInputStream()) {
+                OutputStream outputStream = new FileOutputStream(path + "\\slike\\" + filePart.getSubmittedFileName());
+                IOUtils.copy(inputStream, outputStream);
+                outputStream.close();
+            }
+
+            return "File uploaded and saved.";
+        });
+		
+		post("/api/uploadIzmena", (req, res) -> {
+            req.attribute("org.eclipse.jetty.multipartConfig", new MultipartConfigElement(path + "\\slike\\"));
+            Part filePart = req.raw().getPart("myfileIzmena");
+            System.out.println("upload");
+            try (InputStream inputStream = filePart.getInputStream()) {
+                OutputStream outputStream = new FileOutputStream(path + "\\slike\\" + filePart.getSubmittedFileName());
+                IOUtils.copy(inputStream, outputStream);
+                outputStream.close();
+            }
+
+            return "File uploaded and saved.";
+        });
 	}
 
 }

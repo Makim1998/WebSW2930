@@ -1,12 +1,1 @@
-[
-  {
-    "ime": "Amazon",
-    "opis": "Američka multinacionalna tehnološka kompanija bazirana u Sijetlu",
-    "logo": ""
-  },
-  {
-    "ime": "Google",
-    "opis": "Američka javna korporacija, specijalizovana za internet pretragu i reklamiranje na internetu",
-    "logo": "a"
-  }
-]
+[{"ime":"Amazon","opis":"Americka multinacionalna tehnoloska kompanija bazirana u Sijetlu","logo":"default.png"},{"ime":"Google","opis":"Americka javna korporacija, specijalizovana za internet pretragu i reklamiranje na internetu","logo":"default.png"}]

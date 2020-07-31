@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
+import json.OrganizacijaIzmena;
 import json.VMIzmena;
 
 public class Organizacije {
@@ -116,8 +117,8 @@ public class Organizacije {
 	}
 	
 	
-	public void izmeni(Organizacija o) {
-		Organizacija izmenjen =  getOrganizacija(o.getIme());
+	public void izmeni(OrganizacijaIzmena o) {
+		Organizacija izmenjen =  getOrganizacija(o.getStaro());
 		izmenjen.setIme(o.getIme());
 		izmenjen.setLogo(o.getLogo());
 		izmenjen.setOpis(o.getOpis());
