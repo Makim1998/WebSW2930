@@ -29,6 +29,10 @@ Vue.component("login", {
 
 	    },
 	methods : {
+		redirekt(){
+			this.$router.replace({ name: "homepage" }); 
+		},
+		
 		login() {
             if(this.input.username != "" && this.input.password != "") {
                 /*if(this.input.username == "pacijent" && this.input.password == "pacijent") {
@@ -44,7 +48,11 @@ Vue.component("login", {
     				console.log(response);
     				console.log(response.data);
     				console.log(response.data.uloga);
-    				if(response.data == null){
+    				if(response.data == "redirekt"){
+    					alert("Vec ste ulogovani!");
+    					this.$router.replace({ name: "homepage" });    				
+    				}   
+    				else if(response.data == null){
     					alert("Pogresni kor. ime i lozinka");
     				}   					
     				else if(response.data.uloga == "SUPER_ADMIN"){
@@ -53,17 +61,18 @@ Vue.component("login", {
     				}
     				else if(response.data.uloga== "ADMIN"){
     					console.log("Ulogovao se admin");
-    					//this.$router.replace({ name: "administratorKlinike" });
-    				}
+    					this.$router.replace({ name: "homepage" });    				}
     				else{
     					console.log("Ulogovao se korisnik");
-    					//this.$router.replace({ name: "MSHome" }) 
-    				}
+    					this.$router.replace({ name: "homepage" });    				}
     			 })
     			
     			.catch(function(error){
-    				if(error.response){
+    				if(error.response.data == "Pogresni korisnicko ime i lozinka!"){
     					alert("Pogresni kor. ime i lozinka");
+    				}
+    				else{
+    					alert("Vec ste ulogovani!");
     				};
     			});
             } else {

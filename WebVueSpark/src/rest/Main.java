@@ -17,8 +17,12 @@ import javax.servlet.http.Part;
 
 import com.google.gson.Gson;
 
+import json.DiskIzmena;
 import json.KategorijaIzmena;
 import json.OrganizacijaIzmena;
+import json.VMIzmena;
+import model.Disk;
+import model.Diskovi;
 import model.KategorijaVM;
 import model.Kategorije;
 import model.Korisnici;
@@ -26,12 +30,16 @@ import model.Korisnik;
 import model.Organizacija;
 import model.Organizacije;
 import model.Uloga;
+import model.VMe;
 import spark.utils.IOUtils;
 
 public class Main {
 	public static Korisnici korisnici;
 	public static Organizacije organizacije;
 	public static Kategorije kategorije;
+	public static Diskovi diskovi;
+	public static VMe vme;
+	
 	private static Gson g = new Gson();
 	public static Korisnik ulogovan;
 
@@ -44,7 +52,8 @@ public class Main {
 		korisnici = new Korisnici(path + "\\korisnici.txt");
 		organizacije = new Organizacije(path + "\\organizacije.txt");
 		kategorije = new Kategorije(path + "\\kategorije.txt");
-
+		diskovi = new Diskovi(path + "\\diskovi.txt");
+		vme = new VMe(path + "\\vm.txt");
 		
 		get("/test", (req, res) -> {
 			return "Works";
@@ -53,10 +62,16 @@ public class Main {
 		post("rest/login/:username/:password",(req,res) ->{
 			res.type("application/json");
 			System.out.println("login");
+			if (ulogovan != null) {
+				return("redirekt");
+			}
 			System.out.println(req.params(":username"));
 			System.out.println(req.params(":password"));
 			Korisnik k =korisnici.validiraj(req.params(":username"), req.params(":password"));
 			System.out.println(k);
+			if(k == null) {
+				halt(400, "Pogresni korisnicko ime i lozinka!");
+			}
 			ulogovan = k;
 			return g.toJson(k);
 		});
@@ -225,6 +240,7 @@ public class Main {
 			}
 			return ("OK");
 		});
+		
 		get("rest/getSveOrganizacije", (req,res) ->{
 			res.type("application/json");
 			//organizacije = new Organizacije(path + "\\organizacije.txt");
@@ -280,6 +296,89 @@ public class Main {
 			}
 			else  {
 				organizacije.izmeni(o);
+			}
+			return ("OK");
+		});
+		
+		get("rest/getSviDiskovi", (req,res) ->{
+			res.type("application/json");
+			System.out.println("diskovi");
+			for(Disk d : diskovi.getDiskovi()) {
+				System.out.println(d.getIme());
+			}
+			//organizacije = new Organizacije(path + "\\organizacije.txt");
+			return g.toJson(diskovi);
+		});
+		
+		post("rest/addDisk",(req,res) ->{
+			res.type("application/json");
+			String payload = req.body();
+			Disk d = g.fromJson(payload, Disk.class);
+			if(ulogovan == null || ulogovan.uloga == Uloga.KORISNIK) {
+				System.out.println("Forbiden!");
+				halt(403, "Nemate pravo pristupa!");
+			}
+			if(d == null) {
+				System.out.println("Nije validan zahtev!");
+				halt(400, "Nije validan zahtev!");
+			}
+			if (diskovi.getDisk(d.getIme()) != null) {
+				System.out.println("Ime je zauzeto!");
+				halt(400, "Ime je zauzeto!");
+			}
+			else  {
+				diskovi.dodaj(d);
+			}
+			return ("OK");
+		});
+		
+		post("rest/izmeniDisk", (req,res) ->{
+			res.type("application/json");
+			String payload = req.body();
+			System.out.println(payload);
+			DiskIzmena d = g.fromJson(payload, DiskIzmena.class);
+			System.out.println(d);
+			if (d == null) {
+				System.out.println("Nije validan zahtev!");
+				halt(400, "Nije validan zahtev!");
+			}
+			String staro = d.getStaro();
+			System.out.println("za izmenu");
+			System.out.println(staro);
+			if(ulogovan == null || ulogovan.uloga == Uloga.KORISNIK) {
+				System.out.println("Forbiden!");
+				halt(403, "Nemate pravo pristupa!");
+			}
+			if (diskovi.getDisk(staro) == null) {
+				System.out.println("Ne postoji disk!");
+				halt(400, "Ne postoji disk!");
+			}
+			if (diskovi.getDisk(d.getIme()) != null) {
+				System.out.println("Ime vec postoji!");
+				halt(400, "Ime vec postoji!");
+			}
+			else  {
+				diskovi.izmeni(d);
+			}
+			return ("OK");
+		});
+		
+		get("rest/obrisiDisk/:ime",(req,res) ->{
+			res.type("application/json");
+			System.out.println("brisanje diska");
+			System.out.println(req.params(":ime"));
+			Disk d = diskovi.getDisk(req.params(":ime"));
+			System.out.println(d);
+			if(ulogovan == null || ulogovan.uloga != Uloga.SUPER_ADMIN) {
+				System.out.println("Forbiden!");
+				halt(403, "Nemate pravo pristupa!");
+			}
+			if (d == null) {
+				System.out.println("Ne postoji disk!");
+				halt(400, "Ne postoji disk!");
+			}
+			else  {
+				diskovi.obrisi(req.params(":ime"));
 			}
 			return ("OK");
 		});

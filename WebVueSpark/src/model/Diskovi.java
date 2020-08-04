@@ -10,6 +10,8 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
+import json.DiskIzmena;
+
 public class Diskovi {
 	public ArrayList<Disk> diskovi;
 	public String path;
@@ -56,6 +58,38 @@ public class Diskovi {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+	}
+	public Disk getDisk(String ime) {
+		// TODO Auto-generated method stub
+		for(Disk d : diskovi) {
+			if(d.getIme().equals(ime)) {
+				return d;
+			}
+		}
+		return null;
+	}
+	
+	public void dodaj(Disk d) {
+		diskovi.add(d);
+		writeFile();
+	}
+	
+	public void izmeni(DiskIzmena d) {
+		// TODO Auto-generated method stub
+		Disk zaIzmenu = getDisk(d.staro);
+		zaIzmenu.setIme(d.ime);
+		zaIzmenu.setTip(d.tip);
+		zaIzmenu.setVirtuelnaMasina(d.virtuelnaMasina);
+		zaIzmenu.setKapacitet(d.kapacitet);
+		writeFile();
+
+	}
+	public void obrisi(String ime) {
+		// TODO Auto-generated method stub
+		Disk zaBrisnje = getDisk(ime);
+		diskovi.remove(zaBrisnje);
+		writeFile();
 		
 	}
 	

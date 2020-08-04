@@ -74,7 +74,7 @@ Vue.component('korisnici',{
        		<div class="form-group">
            		Prezime: <input name = "prezime"type="text"  v-model ="prezime" class="form-control" required="required">
        		</div>
-       		<div class="form-group" id = "organizacija">
+       		<div class="form-group">
        			<label for = "organizacija">Oganizacija: </label>
 				<select id = "organizacija"  class= "form-control"  v-model ="organizacija" required>
 					<option v-for="o in organizacije" :value="o.ime">{{o.ime}}</option>

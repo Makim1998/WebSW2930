@@ -1,7 +1,6 @@
 package model;
 
 public class Disk {
-	
 	private String ime;
 	private TipDiska tip;
 	private int kapacitet;
@@ -46,6 +45,13 @@ public class Disk {
 		this.kapacitet = kapacitet;
 		this.virtuelnaMasina = virtuelnaMasina;
 		this.organizacija = organizacija;
+	}
+	
+	
+	@Override
+	public boolean equals(Object obj) {
+		// TODO Auto-generated method stub
+		return this.getIme().equals(((Disk)obj).getIme());
 	}
 	
 }
