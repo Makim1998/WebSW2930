@@ -88,12 +88,22 @@ public class Main {
 		
 		get("rest/getSviKorisnici", (req,res) ->{
 			res.type("application/json");
-			korisnici = new Korisnici(path + "\\korisnici.txt");
+			//korisnici = new Korisnici(path + "\\korisnici.txt");
+			Korisnici korisniciZaUlogovanog;
+			if (ulogovan.uloga == Uloga.ADMIN) {
+				korisniciZaUlogovanog = korisnici.getAdminKorisnici(ulogovan.organizacija);
+			}
+			else {
+				korisniciZaUlogovanog = korisnici;
+			}
 			for (Korisnik k: korisnici.korisnici) {
 				System.out.println(k);
 			}
-			return g.toJson(korisnici);
+			
+			return g.toJson(korisniciZaUlogovanog);
 		});
+		
+		
 		
 		post("rest/addKorisnik",(req,res) ->{
 			res.type("application/json");
@@ -155,6 +165,10 @@ public class Main {
 			if (korisnici.getKorisnik(k.email) == null) {
 				System.out.println("Ne postoji korisnik!");
 				halt(400, "Ne postoji korisnik!");
+			}
+			if (k.email.equals(ulogovan.email)) {
+				System.out.println("Ne mozete obrisati Vas!");
+				halt(400, "Ne mozete obrisati Vas!");
 			}
 			else  {
 				korisnici.obrisi(k.email);

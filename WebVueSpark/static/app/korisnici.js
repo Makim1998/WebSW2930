@@ -9,7 +9,12 @@ Vue.component('korisnici',{
 			prezime: "",
 			lozinka: "",
 			organizacija: "",
-			uloga: ""
+			ulogovanorg: "",
+			uloga: "",
+			superAdmin: false,
+			admin: false,
+			korisnik: false,
+			validacija: false
 			
 		}
 		
@@ -46,7 +51,7 @@ Vue.component('korisnici',{
   </tbody>
 </table>
 <!-- Button trigger modal -->
-<button id = "Dodaj" v-on:click = "isprazniPolja()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDodaj">
+<button id = "Dodaj" v-if = "korisnik == false"  v-on:click = "isprazniPolja()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalDodaj">
   Dodaj korisnika
 </button>
 
@@ -74,11 +79,14 @@ Vue.component('korisnici',{
        		<div class="form-group">
            		Prezime: <input name = "prezime"type="text"  v-model ="prezime" class="form-control" required="required">
        		</div>
-       		<div class="form-group">
+       		<div class="form-group" v-if = "superAdmin == true">
        			<label for = "organizacija">Oganizacija: </label>
 				<select id = "organizacija"  class= "form-control"  v-model ="organizacija" required>
 					<option v-for="o in organizacije" :value="o.ime">{{o.ime}}</option>
 				</select>
+		    </div>
+		    <div class="form-group" v-if = "admin == true">
+       			Organizacija: <input name = "org" type="text"  v-model ="organizacija" class="form-control" disabled>
 		    </div>
        		<div class="form-group">
            		Uloga: <select name = "tip"  v-model ="uloga" class="form-control" id="exampleFormControlSelect1">
@@ -150,12 +158,61 @@ Vue.component('korisnici',{
         isprazniPolja() {
         	this.ime = "";
         	this.prezime = "";
-        	this.organizacija ="";
+        	
+        	if(this.superAdmin == true){
+        		this.organizacija = "";
+	    	}
+	    	if(this.admin == true){
+	    		this.organizacija = this.ulogovanorg;
+	    	}
         	this.lozinka ="";
         	this.email = "";
         	this.uloga = "";
         },
+        proveri() {
+        	if(this.ime == ""){
+        		alert("Niste popunili ime!");
+        		this.validacija = false;
+        	}
+        	else if(this.prezime == ""){
+        		alert("Niste popunili prezime!");
+        		this.validacija = false;
+
+        	}
+        	else if(this.organizacija == ""){
+        		alert("Niste popunili organizaciju!");
+        		this.validacija = false;
+
+        	}
+        	else if(this.lozinka == ""){
+        		alert("Niste popunili lozinku!");
+        		this.validacija = false;
+
+        	}
+        	else if(this.email == ""){
+        		alert("Niste popunili email!");
+        		this.validacija = false;
+
+        	}
+        	else if(!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(this.email)){
+        		alert("Email adresa nije validna!")
+        		this.validacija = false;
+        	}
+        	else if(this.uloga == ""){
+        		alert("Niste popunili ulogu!");
+        		this.validacija = false;
+
+        	}
+        	else{
+        		this.validacija = true;
+
+        	}
+        },
         dodaj() {
+        	this.proveri();
+        	if(this.validacija == false){
+        		return;
+        	}
         	axios
 		    .post('rest/addKorisnik', { "email": this.email, "lozinka": this.lozinka, "ime": this.ime, "prezime": this.prezime,"organizacija": this.organizacija, "uloga": this.uloga})
 		    .then((response) => {
@@ -168,9 +225,19 @@ Vue.component('korisnici',{
 			    	console.log(response.data.korisnici);
 			    	this.korisnici = response.data.korisnici;
 			    });
-		    });
+			    
+		    })
+		    .catch(function(error){
+				if(error.response){
+					alert(error.response.data);
+				};
+        	});
         },
         izmeni() {
+        	this.proveri();
+        	if(this.validacija == false){
+        		return;
+        	}
         	axios
 		    .post('rest/izmeniKorisnik',{"email": this.email,"lozinka": this.lozinka,"ime": this.ime,"prezime": this.prezime,"organizacija": this.organizacija,"uloga": this.uloga})
 		    .then((response) => {
@@ -184,7 +251,12 @@ Vue.component('korisnici',{
 			    	console.log(response.data.korisnici);
 			    	this.korisnici = response.data.korisnici;
 			    });
-		    });
+		    })
+		    .catch(function(error){
+				if(error.response){
+					alert(error.response.data);
+				};
+        	});
         },
         obrisi(email){
         	console.log(email);
@@ -198,7 +270,12 @@ Vue.component('korisnici',{
 			    	console.log(response.data.korisnici);
 			    	this.korisnici = response.data.korisnici;
 			    });
-		    });
+		    })
+		    .catch(function(error){
+				if(error.response){
+					alert(error.response.data);
+				};
+        	});
         }
         
         
@@ -208,6 +285,16 @@ Vue.component('korisnici',{
 	    .get('rest/login/getUser')
 	    .then((response) => {
 	    	console.log(response.data);
+	    	if(response.data.uloga == "SUPER_ADMIN"){
+	    		this.superAdmin = true;
+	    	}
+	    	if(response.data.uloga == "ADMIN"){
+	    		this.admin = true;
+	    	}
+	    	if(response.data.uloga == "KORISNIK"){
+	    		this.korisnik = true;
+	    	}
+	    	this.ulogovanorg = response.data.organizacija;
 	    	axios
 		    .get('rest/getSviKorisnici')
 		    .then((response) => {

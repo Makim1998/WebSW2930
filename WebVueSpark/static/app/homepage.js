@@ -10,13 +10,16 @@ Vue.component('homepage',{
 	data: function(){
 		return {
 			component:"blank",
+			superAdmin: false,
+			admin: false,
+			korisnik: false
 		}
 		
 	},
 	template: ` 
 	<div id = "Home">
 		<div  id="mySidenav" class="sidenavbar">
-	      	<a href = "#korisnici"v-on:click = "component = 'korisnici'"  >Korisnici</a>
+	      	<a v-if = "korisnik == false" href = "#korisnici"v-on:click = "component = 'korisnici'"  >Korisnici</a>
 	      	<a href = "#organizacije" v-on:click = "component = 'organizacije'"  >Organizacije</a>
 			<a href = "#kategorije" v-on:click = "component = 'kategorije'">Kategorije</a>
 			<a href = "#diskovi" v-on:click = "component = 'diskovi'">Diskovi</a>
@@ -80,6 +83,16 @@ Vue.component('homepage',{
 	    .get('rest/login/getUser')
 	    .then((response) => {
 	    	console.log(response.data);	
+	    	if(response.data.uloga == "SUPER_ADMIN"){
+	    		this.superAdmin = true;
+	    	}
+	    	if(response.data.uloga == "ADMIN"){
+	    		this.Admin = true;
+	    	}
+	    	if(response.data.uloga == "KORISNIK"){
+	    		this.korisnik = true;
+	    	}
+	    	
 	    })
 	    .catch(response => {
 			this.$router.push("/");
