@@ -230,7 +230,10 @@ public class Main {
 				halt(400, "Ne postoji kategorija!");
 			}
 			else  {
-				kategorije.izmena(k);
+				boolean uspeh = kategorije.izmena(k);
+				if(!uspeh) {
+					halt(400, "Novo ime nije validno!");
+				}
 			}
 			return ("OK");
 		});
@@ -241,6 +244,8 @@ public class Main {
 			System.out.println(req.params(":ime"));
 			KategorijaVM k = kategorije.getKategorija(req.params(":ime"));
 			System.out.println(k);
+			boolean imaVm = false;
+			imaVm = vme.proveriKategoriju(req.params(":ime"));
 			if(ulogovan == null || ulogovan.uloga == Uloga.KORISNIK) {
 				System.out.println("Forbiden!");
 				halt(403, "Nemate pravo pristupa!");
@@ -248,6 +253,10 @@ public class Main {
 			if (k == null) {
 				System.out.println("Ne postoji korisnik!");
 				halt(400, "Ne postoji korisnik!");
+			}
+			if (imaVm) {
+				System.out.println("Ne mozete obrisati jer ima virualnu masinu!");
+				halt(400, "Ne mozete obrisati jer ima virualnu masinu!");
 			}
 			else  {
 				kategorije.obrisi(req.params(":ime"));

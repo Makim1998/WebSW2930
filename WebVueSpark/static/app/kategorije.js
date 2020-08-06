@@ -2,6 +2,7 @@ Vue.component('kategorije',{
 	data: function(){
 		return {
 			kategorije:[],
+			validacija: false,
 			zaBrisanje: "",
 			ime:"",
 			broj: "",
@@ -163,7 +164,36 @@ Vue.component('kategorije',{
         	this.ram = "4";
         	this.gpu = "0";
         },
+        proveri() {
+        	if(this.ime == ""){
+        		alert("Niste popunili ime!");
+        		this.validacija = false;
+        	}
+        	else if(this.broj == ""){
+        		alert("Niste popunili broj jezgara!");
+        		this.validacija = false;
+
+        	}
+        	else if(this.ram == ""){
+        		alert("Niste popunili ram!");
+        		this.validacija = false;
+
+        	}
+        	else if(this.gpu == ""){
+        		alert("Niste popunili gpu!");
+        		this.validacija = false;
+
+        	}
+        	else{
+        		this.validacija = true;
+
+        	}
+        },
         dodaj() {
+        	this.proveri();
+        	if(this.validacija = false){
+        		return;
+        	}
         	axios
 		    .post('rest/addKategorija', { "ime": this.ime, "brojJezgara": this.broj, "RAM": this.ram, "GPU": this.gpu})
 		    .then((response) => {
@@ -176,9 +206,18 @@ Vue.component('kategorije',{
     		    	console.log(response.data.kategorije);
     		    	this.kategorije = response.data.kategorije;
     		    });
-		    });
+		    })
+		    .catch(function(error){
+				if(error.response){
+					alert(error.response.data);
+				};
+        	});
         },
         izmeni() {
+        	this.proveri();
+        	if(this.validacija = false){
+        		return;
+        	}
         	axios
 		    .post('rest/izmeniKategorija',{  "staro": this.stara,"ime": this.ime, "broj": this.broj, "ram": this.ram, "gpu": this.gpu})
 		    .then((response) => {
@@ -192,7 +231,12 @@ Vue.component('kategorije',{
 			    	console.log(response.data.kategorije);
 			    	this.kategorije = response.data.kategorije;
 			    });
-		    });
+		    })
+		    .catch(function(error){
+				if(error.response){
+					alert(error.response.data);
+				};
+        	});
         },
         obrisi(ime){
         	console.log(ime);
@@ -206,7 +250,12 @@ Vue.component('kategorije',{
 			    	console.log(response.data.kategorije);
 			    	this.kategorije = response.data.kategorije;
 			    });
-		    });
+		    })
+		    .catch(function(error){
+				if(error.response){
+					alert(error.response.data);
+				};
+        	});
         }
         
         

@@ -21,7 +21,7 @@ Vue.component('homepage',{
 		<div  id="mySidenav" class="sidenavbar">
 	      	<a v-if = "korisnik == false" href = "#korisnici"v-on:click = "component = 'korisnici'"  >Korisnici</a>
 	      	<a href = "#organizacije" v-on:click = "component = 'organizacije'"  >Organizacije</a>
-			<a href = "#kategorije" v-on:click = "component = 'kategorije'">Kategorije</a>
+			<a v-if = "superAdmin == true" href = "#kategorije" v-on:click = "component = 'kategorije'">Kategorije</a>
 			<a href = "#diskovi" v-on:click = "component = 'diskovi'">Diskovi</a>
 			<a href = "#vm" v-on:click = "component = 'vm'" >Virtualne masine</a>
 			<a href = "#profil" v-on:click = "component = 'profil'" >Profil</a>

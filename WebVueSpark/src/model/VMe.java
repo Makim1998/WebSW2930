@@ -100,4 +100,13 @@ public class VMe {
 		this.virtualneMasine.remove(zaBrisanje);
 		writeFile();
 	}
+
+	public boolean proveriKategoriju(String ime) {
+		for(VM v: virtualneMasine) {
+			if(v.getKategorija().equals(ime)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }
