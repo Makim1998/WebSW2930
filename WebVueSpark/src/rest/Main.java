@@ -30,6 +30,7 @@ import model.Korisnik;
 import model.Organizacija;
 import model.Organizacije;
 import model.Uloga;
+import model.VM;
 import model.VMe;
 import spark.utils.IOUtils;
 
@@ -441,6 +442,41 @@ public class Main {
 
             return "File uploaded and saved.";
         });
+		
+		get("rest/getSveVM", (req,res) ->{
+			res.type("application/json");
+			System.out.println("vm");
+			VMe vmzaUlogovanog;
+			//organizacije = new Organizacije(path + "\\organizacije.txt");
+			if(ulogovan.uloga == Uloga.ADMIN || ulogovan.uloga == Uloga.KORISNIK  ) {
+				vmzaUlogovanog = vme.getOrganizationVM(ulogovan.organizacija);
+			}
+			else {
+				vmzaUlogovanog = vme;
+			}
+			
+			return g.toJson(vmzaUlogovanog);
+		});
+		
+		get("rest/obrisiVM/:ime",(req,res) ->{
+			res.type("application/json");
+			System.out.println("brisanje kategorije");
+			System.out.println(req.params(":ime"));
+			VM v = vme.getVM(req.params(":ime"));
+			System.out.println(v);
+			if(ulogovan == null || ulogovan.uloga == Uloga.KORISNIK) {
+				System.out.println("Forbiden!");
+				halt(403, "Nemate pravo pristupa!");
+			}
+			if (v == null) {
+				System.out.println("Ne postoji virtuelna masina!");
+				halt(400, "Ne postoji virtuelna masina!");
+			}
+			else  {
+				vme.obrisi(req.params(":ime"));
+			}
+			return ("OK");
+		});
 	}
 
 }
