@@ -124,5 +124,15 @@ public class Organizacije {
 		izmenjen.setOpis(o.getOpis());
 		writeFile();
 	}
+
+	public Organizacije getAdminOrganizacija(String organizacija) {
+		Organizacije org = new Organizacije();
+		for(Organizacija o: organizacije) {
+			if(o.getIme().equals(organizacija)) {
+				org.organizacije.add(o);
+			}
+		}
+		return org;
+	}
 	
 }

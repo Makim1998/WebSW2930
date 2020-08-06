@@ -5,7 +5,11 @@ Vue.component('organizacije',{
 			staro: "",
 			ime:"",
 			opis: "",
-			logo: ""
+			logo: "",
+			superAdmin: false,
+			admin: false,
+			korisnik: false,
+			validacija: false
 		}
 		
 	},
@@ -34,7 +38,7 @@ Vue.component('organizacije',{
   </tbody>
 </table>
 <!-- Button trigger modal -->
-<button id = "Dodaj" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+<button id = "Dodaj" v-if = "superAdmin == true" v-on:click = "isprazniPolja()" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
   Dodaj organizaciju
 </button>
 
@@ -157,8 +161,26 @@ Vue.component('organizacije',{
         	this.opis = "";
         	this.logo = "";
         },
+        proveri(){
+        	if(this.ime == ""){
+        		alert("Niste popunili ime!");
+        		this.validacija = false;
+        	}
+        	else if(this.opis == ""){
+        		alert("Niste popunili opis!");
+        		this.validacija = false;
+
+        	}
+        	else {
+        		this.validacija = true;
+
+        	}
+        },
         dodaj() {
-        	console
+        	this.proveri();
+        	if(this.validacija == false){
+        		return;
+        	}
         	axios
 		    .post('rest/addOrganizacija', { "ime": this.ime, "opis": this.opis, "logo": this.logo})
 		    .then((response) => {
@@ -179,6 +201,10 @@ Vue.component('organizacije',{
         	});
         },
         izmeni() {
+        	this.proveri();
+        	if(this.validacija == false){
+        		return;
+        	}
         	axios
 		    .post('rest/izmeniOrganizacija',{  "staro": this.staro, "ime": this.ime, "opis": this.opis, "logo": this.logo})
 		    .then((response) => {
@@ -205,6 +231,15 @@ Vue.component('organizacije',{
 	    .get('rest/login/getUser')
 	    .then((response) => {
 	    	console.log(response.data);
+	    	if(response.data.uloga == "SUPER_ADMIN"){
+	    		this.superAdmin = true;
+	    	}
+	    	if(response.data.uloga == "ADMIN"){
+	    		this.admin = true;
+	    	}
+	    	if(response.data.uloga == "KORISNIK"){
+	    		this.korisnik = true;
+	    	}
 	    	axios
 		    .get('rest/getSveOrganizacije')
 		    .then((response) => {

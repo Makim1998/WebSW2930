@@ -267,7 +267,17 @@ public class Main {
 		get("rest/getSveOrganizacije", (req,res) ->{
 			res.type("application/json");
 			//organizacije = new Organizacije(path + "\\organizacije.txt");
-			return g.toJson(organizacije);
+			Organizacije organizacijeZaUlogovanog;
+			if (ulogovan.uloga == Uloga.ADMIN) {
+				organizacijeZaUlogovanog = organizacije.getAdminOrganizacija(ulogovan.organizacija);
+			}
+			else {
+				organizacijeZaUlogovanog = organizacije;
+			}
+			for (Organizacija k: organizacije.organizacije) {
+				System.out.println(k);
+			}
+			return g.toJson(organizacijeZaUlogovanog);
 		});
 		
 		post("rest/addOrganizacija",(req,res) ->{
@@ -313,7 +323,7 @@ public class Main {
 				System.out.println("Ne postoji organizacija!");
 				halt(400, "Ne postoji organizacija!");
 			}
-			if (organizacije.getOrganizacija(o.getIme()) != null) {
+			if ((!staro.equals(o.ime)) && organizacije.getOrganizacija(o.getIme()) != null) {
 				System.out.println("Ime vec postoji!");
 				halt(400, "Ime vec postoji!");
 			}

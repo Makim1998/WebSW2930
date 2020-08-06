@@ -20,7 +20,8 @@ Vue.component('homepage',{
 	<div id = "Home">
 		<div  id="mySidenav" class="sidenavbar">
 	      	<a v-if = "korisnik == false" href = "#korisnici"v-on:click = "component = 'korisnici'"  >Korisnici</a>
-	      	<a href = "#organizacije" v-on:click = "component = 'organizacije'"  >Organizacije</a>
+	      	<a v-if = "superAdmin == true" href = "#organizacije" v-on:click = "component = 'organizacije'"  >Organizacije</a>
+	      	<a v-if = "admin == true" href = "#organizacija" v-on:click = "component = 'organizacije'"  >Organizacija</a>
 			<a v-if = "superAdmin == true" href = "#kategorije" v-on:click = "component = 'kategorije'">Kategorije</a>
 			<a href = "#diskovi" v-on:click = "component = 'diskovi'">Diskovi</a>
 			<a href = "#vm" v-on:click = "component = 'vm'" >Virtualne masine</a>
@@ -87,7 +88,7 @@ Vue.component('homepage',{
 	    		this.superAdmin = true;
 	    	}
 	    	if(response.data.uloga == "ADMIN"){
-	    		this.Admin = true;
+	    		this.admin = true;
 	    	}
 	    	if(response.data.uloga == "KORISNIK"){
 	    		this.korisnik = true;
