@@ -70,6 +70,19 @@ public class Diskovi {
 		return null;
 	}
 	
+	public Diskovi getOrganizacijaDiskovi(String organizacija) {
+		Diskovi adminovi = new Diskovi();
+		adminovi.diskovi = new ArrayList<Disk>();
+		System.out.println("diskovi");
+		for(Disk d:this.diskovi) {
+			if(d.getOrganizacija().equals(organizacija)) {
+				System.out.println(d.getIme());
+				adminovi.diskovi.add(d);
+			}
+		}
+		return adminovi;
+	}
+	
 	public void dodaj(Disk d) {
 		diskovi.add(d);
 		writeFile();

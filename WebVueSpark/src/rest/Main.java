@@ -187,6 +187,13 @@ public class Main {
 			return g.toJson(kategorije);
 		});
 		
+		get("rest/getKategorija/:ime", (req,res) ->{
+			res.type("application/json");
+			System.out.println("kategorije");
+			System.out.println(req.params(":ime"));
+			return g.toJson(kategorije.getKategorija(req.params(":ime")));
+		});
+		
 		post("rest/addKategorija",(req,res) ->{
 			res.type("application/json");
 			String payload = req.body();
@@ -344,6 +351,14 @@ public class Main {
 			return g.toJson(diskovi);
 		});
 		
+		get("rest/getOrganizacijaDiskovi", (req,res) ->{
+			res.type("application/json");
+			System.out.println("diskovi");
+			Diskovi zaOrg = diskovi.getOrganizacijaDiskovi(ulogovan.organizacija);
+			//organizacije = new Organizacije(path + "\\organizacije.txt");
+			return g.toJson(zaOrg);
+		});
+		
 		post("rest/addDisk",(req,res) ->{
 			res.type("application/json");
 			String payload = req.body();
@@ -458,6 +473,27 @@ public class Main {
 			return g.toJson(vmzaUlogovanog);
 		});
 		
+		post("rest/addVM",(req,res) ->{
+			res.type("application/json");
+			String payload = req.body();
+			VM vm = g.fromJson(payload, VM.class);
+			if(ulogovan == null || ulogovan.uloga == Uloga.KORISNIK) {
+				System.out.println("Forbiden!");
+				halt(403, "Nemate pravo pristupa!");
+			}
+			if(vm == null) {
+				System.out.println("Nije validan zahtev!");
+				halt(400, "Nije validan zahtev!");
+			}
+			if (vme.getVM(vm.getIme()) != null) {
+				System.out.println("Ime je zauzeto!");
+				halt(400, "Ime je zauzeto!");
+			}
+			else  {
+				vme.dodaj(vm);
+			}
+			return ("OK");
+		});
 		get("rest/obrisiVM/:ime",(req,res) ->{
 			res.type("application/json");
 			System.out.println("brisanje kategorije");
