@@ -14,6 +14,9 @@ Vue.component('vm',{
 			organizacija: "",
 			kategorija: "",
 			diskovi:[],
+			aktivnosti:[],
+			datumi:[],
+			stanja:[],
 			superAdmin: false,
 			admin: false,
 			korisnik: false,
@@ -81,6 +84,11 @@ Vue.component('vm',{
 			<td >{{v.organizacija}}</td>
 			
 			<td>
+			<button type="button" v-on:click = "popuni(v)" class="btn btn-primary" data-toggle="modal" data-target="#edit">
+				Izmeni
+			</button>
+			</td>
+			<td>
 			<button v-if = "superAdmin == true" type="button" v-on:click = "obrisi(v.ime)" class="btn btn-primary">
 				Obrisi
 			</button>
@@ -123,14 +131,16 @@ Vue.component('vm',{
 					<option v-for="k in svekategorije" :value="k.ime">{{k.ime}}</option>
 				</select>
        		</div>
-       		<div class="form-group">
+       		<div class = "row">
+       			<div class="col-sm-4">
           		Broj jezgara: <input name = "broj" v-model ="broj" type="text" class="form-control" disabled>
-       		</div>
-       		<div class="form-group">
-          		Ram: <input name = "ram" v-model ="ram" type="text" class="form-control" disabled>
-       		</div>
-       		<div class="form-group">
-          		Gpu jezgra: <input name = "gpu" v-model ="gpu" type="text" class="form-control" disabled>
+	       		</div>
+	       		<div class="col-sm-4">
+	          		Ram: <input name = "ram" v-model ="ram" type="text" class="form-control" disabled>
+	       		</div>
+	       		<div class="col-sm-4">
+	          		Gpu jezgra: <input name = "gpu" v-model ="gpu" type="text" class="form-control" disabled>
+	       		</div>
        		</div>
        		<div class="form-group">
            		<label for = "dis">Diskovi: (Drzite ctrl kada birate)</label>
@@ -150,13 +160,93 @@ Vue.component('vm',{
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Izmena kategorije</h5>
+        <h5 class="modal-title" id="exampleModalLabel">Izmena virtuelne masine</h5>
         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        
+        <form id = "izmeniVM">  
+       		<div class="form-group">
+          		Ime: <input name = "ime"  v-model ="ime"  type="text" class="form-control" required="required">
+       		</div>
+       		<div class="form-group">
+           		<label for = "organizacija">Oganizacija: </label>
+				<select id = "organizacija"  class= "form-control"  v-model ="organizacija" required>
+					<option v-for="o in organizacije" :value="o.ime">{{o.ime}}</option>
+				</select>
+       		</div>
+       		<div class="form-group">
+          		<label for = "kat">Kategorija: </label>   
+				<select id = "kat" @change="onChange($event)" class= "form-control"  v-model ="kategorija" required>
+					<option v-for="k in svekategorije" :value="k.ime">{{k.ime}}</option>
+				</select>
+       		</div>
+       		<div class = "row">
+       			<div class="col-sm-4">
+          		Broj jezgara: <input name = "broj" v-model ="broj" type="text" class="form-control" disabled>
+	       		</div>
+	       		<div class="col-sm-4">
+	          		Ram: <input name = "ram" v-model ="ram" type="text" class="form-control" disabled>
+	       		</div>
+	       		<div class="col-sm-4">
+	          		Gpu jezgra: <input name = "gpu" v-model ="gpu" type="text" class="form-control" disabled>
+	       		</div>
+       		</div>
+       		
+       		<div class="form-group">
+				<label for = "dis">Zakaceni diskovi: </label>
+				<table class="table table-striped" id = "dis">
+				<tbody>
+					 <tr> 
+					 <td v-for="d in diskovi">{{d}}</td>
+					 </tr>
+				</tbody>
+				</table>
+       		</div>
+       		<div class="form-group" v-if = "superAdmin == true">
+           		<label for = "lis">Lista aktivnosti: </label>
+				<table class="table table-striped" id = "lis">
+				<thead>
+				    <tr>
+				      <th scope="col">Datum</th>
+				      <th scope="col">Stanje</th>
+				    </tr>
+				</thead>
+				<tbody>
+					 <tr v-for="(item,index) in datumi"> 
+					 <td><input v-model ="datumi[index]"  type="text" class="form-control"></td>
+					 <td>
+					 <select v-model ="stanja[index]">
+					 	<option value = "ukljucena">ukljucena</option>
+					 	<option value = "iskljucena">iskljucena</option>
+					 </select>
+					 </td>
+					 </tr>
+				</tbody>
+				</table> 
+       		</div>
+       		<div class="form-group" v-if = "superAdmin == false">
+           		<label for = "lis">Lista aktivnosti: </label>
+				<table class="table table-striped" id = "lis">
+				<thead>
+				    <tr>
+				      <th scope="col">Datum</th>
+				      <th scope="col">Stanje</th>
+				    </tr>
+				</thead>
+				<tbody>
+					 <tr v-for="l in aktivnosti"> 
+					 <td>{{l.split("-")[0]}}</td>
+					 <td>{{l.split("-")[1]}}</td>
+					 </tr>
+				</tbody>
+				</table> 
+       		</div>
+       		<div class="form-group">
+           		<button v-on:click.prevent = "izmeni()" class="btn btn-primary btn-block">Izmeni</button>     
+       		</div>   
+        </form>
       </div>
     </div>
   </div>
@@ -165,6 +255,33 @@ Vue.component('vm',{
 `
 	, 
 	methods : {
+		popuni(v){
+			this.stara = v.ime;
+			this.ime = v.ime;
+			this.kategorija = v.kategorija;
+			this.organizacija = v.organizacija;
+			this.diskovi = v.diskovi;
+			this.broj = v.brojJezgara;
+			this.ram = v.RAM;
+			this.gpu = v.GPU;
+			this.aktivnosti = v.aktivnosti;
+			for (i = 0; i < v.aktivnosti.length; i++) {
+				this.datumi.push(v.aktivnosti[i].split("-")[0]);
+				this.stanja.push(v.aktivnosti[i].split("-")[1]);
+			} 
+		},
+		isprazniPolja(){
+			this.stara = "";
+			this.ime = "";
+			this.kategorija = "";
+			this.organizacija = "";
+			this.diskovi = [];
+			this.broj = "";
+			this.ram = "";
+			this.gpu = "";
+			this.aktivnosti = [];
+
+		},
 		onChange(event) {
             var ime = event.target.value;
             console.log(ime);
@@ -211,14 +328,27 @@ Vue.component('vm',{
         		this.validacija = false;
 
         	}
+        	else if(this.datumi.length != 0){
+        		for(i = 0; i < this.datumi.length;i++){
+                	if(!moment( this.datumi[i], 'DD.MM.YYYY. HH:mm', true).isValid()){
+                		alert("Datum "+this.datumi[i] +" nije u ispravnom formatu!\n (DD.MM.YYYY. HH:mm)");
+                		
+                	}
+        		}
+        		this.validacija = true;
+        		
+        	}
         	else{
+        		for(i = 0; i < this.datumi.length;i++){
+                	this.aktivnosti[i] = this.datumi[i] + '-' + this.stanja[i];
+        		}
         		this.validacija = true;
 
         	}
         },
         dodaj() {
         	this.proveri();
-        	if(this.validacija = false){
+        	if(this.validacija == false){
         		return;
         	}
         	axios
@@ -242,22 +372,22 @@ Vue.component('vm',{
         },
         izmeni() {
         	this.proveri();
-        	if(this.validacija = false){
+        	if(this.validacija == false){
         		return;
         	}
         	axios
-		    .post('rest/izmeniKategorija',{  "staro": this.stara,"ime": this.ime, "broj": this.broj, "ram": this.ram, "gpu": this.gpu})
+		    .post('rest/izmeniVM',{  "staro": this.stara,"ime": this.ime,"organizacija": this.organizacija,"kategorija":this.kategorija,"brojJezgara": this.broj, "RAM": this.ram, "GPU": this.gpu, "diskovi":this.diskovi})
 		    .then((response) => {
 		    	$('#edit').modal('hide');
             	$('.modal-backdrop').remove();
 		    	console.log("ok");
 		    	console.log(response.data);
 		    	axios
-			    .get('rest/getSveKategorije')
-			    .then((response) => {
-			    	console.log(response.data.kategorije);
-			    	this.kategorije = response.data.kategorije;
-			    });
+    		    .get('rest/getSveVM')
+    		    .then((response) => {
+    		    	console.log(response.data.virtualneMasine);
+    		    	this.vm = response.data.virtualneMasine;
+    		    });
 		    })
 		    .catch(function(error){
 				if(error.response){

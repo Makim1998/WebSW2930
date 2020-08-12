@@ -191,7 +191,7 @@ Vue.component('kategorije',{
         },
         dodaj() {
         	this.proveri();
-        	if(this.validacija = false){
+        	if(this.validacija == false){
         		return;
         	}
         	axios
@@ -215,7 +215,7 @@ Vue.component('kategorije',{
         },
         izmeni() {
         	this.proveri();
-        	if(this.validacija = false){
+        	if(this.validacija == false){
         		return;
         	}
         	axios

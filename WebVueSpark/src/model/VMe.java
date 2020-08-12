@@ -4,7 +4,9 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -93,7 +95,16 @@ public class VMe {
 	}
 
 	public void izmeni(VMIzmena v) {
-		
+		VM zaMenjanje = getVM(v.staro);
+		zaMenjanje.setIme(v.ime);
+		zaMenjanje.setKategorija(v.kategorija);
+		zaMenjanje.setDiskovi(v.diskovi);
+		zaMenjanje.setAktivnosti(v.aktivnosti);
+		zaMenjanje.setBrojJezgara(v.brojJezgara);
+		zaMenjanje.setRAM(v.RAM);
+		zaMenjanje.setGPU(v.GPU);
+		zaMenjanje.setOrganizacija(v.organizacija);
+		writeFile();
 	}
 	public void obrisi(String ime) {
 		VM zaBrisanje = getVM(ime);

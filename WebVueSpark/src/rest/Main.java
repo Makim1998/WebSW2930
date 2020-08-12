@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 
 import javax.servlet.MultipartConfigElement;
 import javax.servlet.http.Part;
@@ -40,6 +41,9 @@ public class Main {
 	public static Kategorije kategorije;
 	public static Diskovi diskovi;
 	public static VMe vme;
+	
+	SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy. HH:mm");
+
 	
 	private static Gson g = new Gson();
 	public static Korisnik ulogovan;
@@ -402,7 +406,7 @@ public class Main {
 				System.out.println("Ne postoji disk!");
 				halt(400, "Ne postoji disk!");
 			}
-			if (diskovi.getDisk(d.getIme()) != null) {
+			if ((!d.getIme().equals(d.getStaro())) && diskovi.getDisk(d.getIme()) != null) {
 				System.out.println("Ime vec postoji!");
 				halt(400, "Ime vec postoji!");
 			}
@@ -491,6 +495,37 @@ public class Main {
 			}
 			else  {
 				vme.dodaj(vm);
+			}
+			return ("OK");
+		});
+		
+		post("rest/izmeniVM", (req,res) ->{
+			res.type("application/json");
+			String payload = req.body();
+			System.out.println(payload);
+			VMIzmena vm = g.fromJson(payload, VMIzmena.class);
+			System.out.println(vm);
+			if (vm == null) {
+				System.out.println("Nije validan zahtev!");
+				halt(400, "Nije validan zahtev!");
+			}
+			String staro = vm.staro;
+			System.out.println("za izmenu");
+			System.out.println(staro);
+			if(ulogovan == null || ulogovan.uloga == Uloga.KORISNIK) {
+				System.out.println("Forbiden!");
+				halt(403, "Nemate pravo pristupa!");
+			}
+			if (vme.getVM(staro) == null) {
+				System.out.println("Ne postoji vm!");
+				halt(400, "Ne postoji virtuelna masina!");
+			}
+			if ((!vm.staro.equals(vm.ime)) && vme.getVM(vm.ime) != null) {
+				System.out.println("Ime vec postoji!");
+				halt(400, "Ime vec postoji!");
+			}
+			else  {
+				vme.izmeni(vm);
 			}
 			return ("OK");
 		});

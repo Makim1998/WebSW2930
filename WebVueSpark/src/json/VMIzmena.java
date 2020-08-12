@@ -11,7 +11,7 @@ public class VMIzmena {
 	public int RAM;
 	public int GPU;
 	public ArrayList<String> diskovi = new ArrayList<String>();
-	public boolean promenaStanja;
+	public ArrayList<String> aktivnosti = new ArrayList<String>();;
 	
 	public VMIzmena() {
 		super();
