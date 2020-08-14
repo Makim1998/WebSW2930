@@ -4,12 +4,11 @@ const Kategorije = {template: '<kategorije></kategorije>'}
 const Diskovi = {template: '<diskovi></diskovi>'}
 const VM = {template: '<vm></vm>'}
 const Profil = {template: '<profil></profil>'}
-const Empty = {template: '<blank></blank>'}
 
 Vue.component('homepage',{
 	data: function(){
 		return {
-			component:"blank",
+			component:"vm",
 			superAdmin: false,
 			admin: false,
 			korisnik: false
@@ -68,7 +67,6 @@ Vue.component('homepage',{
 		'kategorije': Kategorije,
 		'diskovi': Diskovi,
 		'vm': VM,
-		'blank':Empty,
 		'profil': Profil
 	},
 	

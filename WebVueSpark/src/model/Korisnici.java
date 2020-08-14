@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
+import json.KorisnikIzmena;
 import json.KorisnikLog;
 import json.OrganizacijaIzmena;
 
@@ -126,5 +127,15 @@ public class Korisnici {
 			}
 		}
 		writeFile();
+	}
+
+	public void izmeniProfil(KorisnikIzmena k) {
+		Korisnik izmenjen =  getKorisnik(k.stara);
+		izmenjen.lozinka = k.lozinka;
+		izmenjen.prezime = k.prezime;
+		izmenjen.ime = k.ime;
+		izmenjen.email = k.email;
+		writeFile();
+		
 	}
 }

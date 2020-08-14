@@ -4,6 +4,8 @@ import static spark.Spark.get;
 import static spark.Spark.halt;
 import static spark.Spark.port;
 import static spark.Spark.post;
+import static spark.Spark.put;
+
 import static spark.Spark.staticFiles;
 
 import java.io.File;
@@ -20,6 +22,7 @@ import com.google.gson.Gson;
 
 import json.DiskIzmena;
 import json.KategorijaIzmena;
+import json.KorisnikIzmena;
 import json.OrganizacijaIzmena;
 import json.VMIzmena;
 import model.Disk;
@@ -179,6 +182,33 @@ public class Main {
 				korisnici.obrisi(k.email);
 			}
 			return ("OK");
+		});
+		
+		put("rest/profil",(req,res) ->{
+			res.type("application/json");
+			System.out.println("izmena profila");
+			String payload = req.body();
+			System.out.println(payload);
+			KorisnikIzmena k = g.fromJson(payload, KorisnikIzmena.class);
+			if(k == null) {
+				System.out.println("Nije validan zahtev!");
+				halt(400, "Nije validan zahtev!");
+			}
+			System.out.println(k.ime);
+			System.out.println("za izmenu");
+			if(ulogovan == null) {
+				System.out.println("Forbiden!");
+				halt(403, "Nemate pravo pristupa!");
+			}
+			
+			if (korisnici.getKorisnik(k.stara) == null) {
+				System.out.println("Ne postoji korisnik!");
+				halt(400, "Ne postoji korisnik!");
+			}
+			else  {
+				korisnici.izmeniProfil(k);
+			}
+			return (g.toJson(k));
 		});
 		
 		get("rest/getSveKategorije", (req,res) ->{
