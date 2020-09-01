@@ -11,6 +11,8 @@ import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
 import json.DiskIzmena;
+import json.OrganizacijaIzmena;
+import json.VMIzmena;
 
 public class Diskovi {
 	public ArrayList<Disk> diskovi;
@@ -105,6 +107,38 @@ public class Diskovi {
 		writeFile();
 		
 	}
+	public void azurirajOrganizacije(OrganizacijaIzmena o) {
+		for(Disk d : diskovi) {
+			if(d.getOrganizacija().equals(o.staro)) {
+				d.setOrganizacija(o.ime);
+			}
+		}
+		writeFile();
+		
+	}
+	public Diskovi getAdminDisk(String organizacija) {
+		Diskovi zaAdmina = new Diskovi();
+		zaAdmina.diskovi = new ArrayList<Disk>();
+		for(Disk d: diskovi) {
+			if(d.getOrganizacija().equals(organizacija)) {
+				zaAdmina.diskovi.add(d);
+			}
+		}
+		return zaAdmina;
+	}
+	public void azurirajVm(VMIzmena vm) {
+		for(Disk d: diskovi) {
+			if(vm.diskovi.contains(d.getIme())) {
+				d.setVirtuelnaMasina(vm.ime);
+			}
+			else if(d.getVirtuelnaMasina().equals(vm.staro)) {
+				d.setVirtuelnaMasina("");
+			}
+		}
+	
+	writeFile();
+	}	
+	
 	
 	
 }

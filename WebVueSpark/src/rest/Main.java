@@ -131,6 +131,7 @@ public class Main {
 			}
 			else  {
 				korisnici.dodaj(k);
+				organizacije.dodajKorisnika(k);
 			}
 			return ("OK");
 		});
@@ -180,6 +181,7 @@ public class Main {
 			}
 			else  {
 				korisnici.obrisi(k.email);
+				organizacije.obrisiKorisnika(k.email);
 			}
 			return ("OK");
 		});
@@ -207,6 +209,9 @@ public class Main {
 			}
 			else  {
 				korisnici.izmeniProfil(k);
+				if(ulogovan.uloga !=Uloga.SUPER_ADMIN) {
+					organizacije.azurirajKorisnika(k.stara, k.email,ulogovan.organizacija);
+				}
 			}
 			return (g.toJson(k));
 		});
@@ -277,6 +282,7 @@ public class Main {
 					halt(400, "Novo ime nije validno!");
 				}
 			}
+			vme.azurirajKategoriju(k);
 			return ("OK");
 		});
 		
@@ -371,6 +377,9 @@ public class Main {
 			}
 			else  {
 				organizacije.izmeni(o);
+				korisnici.azurirajOrganizacije(o);
+				diskovi.azurirajOrganizacije(o);
+				vme.azurirajOrganizacije(o);
 			}
 			return ("OK");
 		});
@@ -378,11 +387,19 @@ public class Main {
 		get("rest/getSviDiskovi", (req,res) ->{
 			res.type("application/json");
 			System.out.println("diskovi");
-			for(Disk d : diskovi.getDiskovi()) {
-				System.out.println(d.getIme());
+			Diskovi diskoviZaUlogovanog;
+			if (ulogovan.uloga == Uloga.SUPER_ADMIN) {
+				diskoviZaUlogovanog = diskovi;
+			}
+			else {
+				diskoviZaUlogovanog = diskovi.getAdminDisk(ulogovan.organizacija);
+
+			}
+			for (Disk d: diskoviZaUlogovanog.diskovi) {
+				System.out.println(d);
 			}
 			//organizacije = new Organizacije(path + "\\organizacije.txt");
-			return g.toJson(diskovi);
+			return g.toJson(diskoviZaUlogovanog);
 		});
 		
 		get("rest/getOrganizacijaDiskovi", (req,res) ->{
@@ -442,6 +459,8 @@ public class Main {
 			}
 			else  {
 				diskovi.izmeni(d);
+				vme.azurirajDisk(d);
+		
 			}
 			return ("OK");
 		});
@@ -462,6 +481,7 @@ public class Main {
 			}
 			else  {
 				diskovi.obrisi(req.params(":ime"));
+				vme.obrisiDisk(req.params(":ime"));
 			}
 			return ("OK");
 		});
@@ -555,7 +575,12 @@ public class Main {
 				halt(400, "Ime vec postoji!");
 			}
 			else  {
+				for (String s: vm.aktivnosti) {
+					System.out.println(s);
+				}
 				vme.izmeni(vm);
+				organizacije.azurirajVm(vm);
+				diskovi.azurirajVm(vm);
 			}
 			return ("OK");
 		});
@@ -575,8 +600,49 @@ public class Main {
 			}
 			else  {
 				vme.obrisi(req.params(":ime"));
+				organizacije.obrisiVM(req.params(":ime"));
 			}
 			return ("OK");
+		});
+		
+		get("rest/upaliVM/:ime",(req,res) ->{
+			res.type("application/json");
+			System.out.println("upali vm");
+			System.out.println(req.params(":ime"));
+			VM v = vme.getVM(req.params(":ime"));
+			System.out.println(v);
+			if(ulogovan == null || ulogovan.uloga == Uloga.KORISNIK) {
+				System.out.println("Forbiden!");
+				halt(403, "Nemate pravo pristupa!");
+			}
+			if (v == null) {
+				System.out.println("Ne postoji virtuelna masina!");
+				halt(400, "Ne postoji virtuelna masina!");
+			}
+			else  {
+				vme.upali(req.params(":ime"));
+			}
+			return (g.toJson(v));
+		});
+		
+		get("rest/ugasiVM/:ime",(req,res) ->{
+			res.type("application/json");
+			System.out.println("ugasi vm");
+			System.out.println(req.params(":ime"));
+			VM v = vme.getVM(req.params(":ime"));
+			System.out.println(v);
+			if(ulogovan == null || ulogovan.uloga == Uloga.KORISNIK) {
+				System.out.println("Forbiden!");
+				halt(403, "Nemate pravo pristupa!");
+			}
+			if (v == null) {
+				System.out.println("Ne postoji virtuelna masina!");
+				halt(400, "Ne postoji virtuelna masina!");
+			}
+			else  {
+				vme.ugasi(req.params(":ime"));
+			}
+			return (g.toJson(v));
 		});
 	}
 

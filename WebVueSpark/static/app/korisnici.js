@@ -68,20 +68,20 @@ Vue.component('korisnici',{
       <div class="modal-body">
         <form id = "dodaj">  
        		<div class="form-group">
-          		Email: <input name = "email"  v-model ="email" type="text" class="form-control" required="required">
+          		Email: <input name = "email"  v-model ="email" type="text" class="form-control" >
        		</div>
        		<div class="form-group">
-           		Lozinka: <input name = "lozinka"  v-model ="lozinka" type="text" class="form-control" required="required">
+           		Lozinka: <input name = "lozinka"  v-model ="lozinka" type="text" class="form-control">
        		</div>
        		<div class="form-group">
-          		Ime: <input name = "ime" type="text"  v-model ="ime" class="form-control" required="required">
+          		Ime: <input name = "ime" type="text"  v-model ="ime" class="form-control">
        		</div>
        		<div class="form-group">
-           		Prezime: <input name = "prezime"type="text"  v-model ="prezime" class="form-control" required="required">
+           		Prezime: <input name = "prezime"type="text"  v-model ="prezime" class="form-control">
        		</div>
        		<div class="form-group" v-if = "superAdmin == true">
        			<label for = "organizacija">Oganizacija: </label>
-				<select id = "organizacija"  class= "form-control"  v-model ="organizacija" required>
+				<select id = "organizacija"  class= "form-control"  v-model ="organizacija">
 					<option v-for="o in organizacije" :value="o.ime">{{o.ime}}</option>
 				</select>
 		    </div>

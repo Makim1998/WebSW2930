@@ -61,7 +61,7 @@ Vue.component('kategorije',{
       <div class="modal-body">
         <form id = "dodajKategorija">  
        		<div class="form-group">
-          		Ime: <input name = "ime"  v-model ="ime"  type="text" class="form-control" required="required">
+          		Ime: <input name = "ime"  v-model ="ime"  type="text" class="form-control" >
        		</div>
        		<div class="form-group">
            		Broj jezgara: <select name = "broj"  v-model ="broj"  class="form-control" id="exampleFormControlSelect1">

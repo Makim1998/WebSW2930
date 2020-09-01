@@ -55,10 +55,10 @@ Vue.component('organizacije',{
       <div class="modal-body">
         <form id = "dodajOrganizacija">  
        		<div class="form-group">
-          		Ime: <input name = "ime" v-model ="ime" type="text" class="form-control" required="required">
+          		Ime: <input name = "ime" v-model ="ime" type="text" class="form-control" >
        		</div>
        		<div class="form-group">
-           		Opis: <input name = "opis" v-model ="opis" type="text" class="form-control" required="required">
+           		Opis: <input name = "opis" v-model ="opis" type="text" class="form-control" >
        		</div>
        		<div class="form-group">
 				<label for="myfile">Odaberite sliku za logo: </label>

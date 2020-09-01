@@ -1,1 +1,1 @@
-[{"ime":"A1","brojJezgara":8,"RAM":64,"GPU":2},{"ime":"A2","brojJezgara":8,"RAM":32,"GPU":4},{"ime":"A4","brojJezgara":2,"RAM":8,"GPU":2}]
+[{"ime":"A1","brojJezgara":8,"RAM":64,"GPU":2},{"ime":"A3","brojJezgara":8,"RAM":64,"GPU":4},{"ime":"A4","brojJezgara":2,"RAM":8,"GPU":2}]

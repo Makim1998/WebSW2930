@@ -2,13 +2,14 @@ package model;
 
 import java.util.ArrayList;
 
+
 public class Organizacija {
 	
 	private String ime;
 	private String opis;
 	private String logo;
-	private ArrayList<String> listaKorisnika;
-	private ArrayList<String> listaVM;
+	private ArrayList<String> listaKorisnika = new ArrayList<String>();
+	private ArrayList<String> listaVM = new ArrayList<String>();
 	
 	public Organizacija() {
 		

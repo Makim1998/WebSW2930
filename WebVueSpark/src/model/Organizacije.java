@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.google.gson.stream.JsonReader;
 
+import json.KorisnikIzmena;
 import json.OrganizacijaIzmena;
 import json.VMIzmena;
 
@@ -48,12 +49,14 @@ public class Organizacije {
 		for(Organizacija o : organizacije) {
 			o.getListaKorisnika().remove(email);	
 		}
+		writeFile();
 	}
 	
 	public void obrisiVM(String vm) {
 		for(Organizacija o : organizacije) {
 			o.getListaVM().remove(vm);	
 		}
+		writeFile();
 	}
 	
 	public void azurirajVM(VMIzmena vm) {
@@ -70,16 +73,25 @@ public class Organizacije {
 		writeFile();
 	}
 	
-	public void azurirajKorisnika(String stari, String novi) {
+	public void azurirajKorisnika(String stari, String novi, String org) {
 		for(Organizacija o : organizacije) {
 			int i = 0;
-			for(String s: o.getListaKorisnika()) {
-				if(s.equals(stari)) {
-					break;
+			if(org.equals(o.getIme())) {
+				for(String s: o.getListaKorisnika()) {
+					if(s.equals(stari)) {
+						break;
+					}
+					i++;
 				}
-				i++;
+				if (i < o.getListaKorisnika().size()) {
+					o.getListaKorisnika().set(i, novi);
+				}
+				else {
+					o.getListaKorisnika().add(novi);
+
+				}
 			}
-			o.getListaVM().set(i, novi);
+			
 		}
 		writeFile();
 	}
@@ -120,7 +132,9 @@ public class Organizacije {
 	public void izmeni(OrganizacijaIzmena o) {
 		Organizacija izmenjen =  getOrganizacija(o.getStaro());
 		izmenjen.setIme(o.getIme());
-		izmenjen.setLogo(o.getLogo());
+		if(!o.getLogo().equals("")) {
+			izmenjen.setLogo(o.getLogo());
+		}
 		izmenjen.setOpis(o.getOpis());
 		writeFile();
 	}
@@ -134,5 +148,34 @@ public class Organizacije {
 		}
 		return org;
 	}
+
+	public void dodajKorisnika(Korisnik k) {
+		for(Organizacija o : organizacije) {
+			if(o.getIme().equals(k.getOrganizacija())){
+				o.getListaKorisnika().add(k.getEmail());
+			}
+		}
+		writeFile();
+	}
+
+	public void azurirajVm(VMIzmena vm) {
+		for(Organizacija o : organizacije) {
+			int i = 0;
+			for(String v : o.getListaVM()) {
+				if(v.equals(vm.staro)) {
+					break;
+				}
+				i++;
+			}
+			if(i < o.getListaVM().size()) {
+				o.getListaVM().set(i, vm.ime);
+			}
+			
+		}
+		writeFile();
+		
+	}
+
+	
 	
 }

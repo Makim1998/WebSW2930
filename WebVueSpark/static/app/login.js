@@ -77,6 +77,7 @@ Vue.component("login", {
     			});
             } else {
                 console.log("A username and password must be present");
+                alert("Korisnicko ime i lozinka moraju da budu uneti!");
             }
         },
 	},

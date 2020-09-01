@@ -1,1 +1,1 @@
-[{"ime":"disk2","tip":"SSD","kapacitet":250,"organizacija":"Google","virtuelnaMasina":"VM1"},{"ime":"disk1","tip":"HDD","kapacitet":1000,"organizacija":"Amazon","virtuelnaMasina":"VM2"}]
+[{"ime":"disk2","tip":"SSD","kapacitet":250,"organizacija":"Google","virtuelnaMasina":"VM1"},{"ime":"disk1","tip":"HDD","kapacitet":125,"organizacija":"Google","virtuelnaMasina":"VM1"},{"ime":"disk3","tip":"HDD","kapacitet":125,"organizacija":"Amazon","virtuelnaMasina":"VM2"}]

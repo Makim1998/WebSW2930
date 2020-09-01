@@ -33,8 +33,11 @@ Vue.component('diskovi',{
 			<td >{{d.kapacitet}}</td>
 			<td >{{d.virtuelnaMasina}}</td>
 			<td>
-			<button type="button" v-on:click = "popuni(d)" class="btn btn-primary" data-toggle="modal" data-target="#edit">
+			<button v-if = "korisnik == false" type="button" v-on:click = "popuni(d)" class="btn btn-primary" data-toggle="modal" data-target="#edit">
 				Izmeni
+			</button>
+			<button v-if = "korisnik == true" type="button" v-on:click = "popuni(d)" class="btn btn-primary" data-toggle="modal" data-target="#edit">
+				Pregled
 			</button>
 			</td>
 			<td>
@@ -63,7 +66,7 @@ Vue.component('diskovi',{
       <div class="modal-body">
         <form id = "dodajDisk">  
        		<div class="form-group">
-          		Ime: <input name = "ime"  v-model ="ime"  type="text" class="form-control" required="required">
+          		Ime: <input name = "ime"  v-model ="ime"  type="text" class="form-control" >
        		</div>
        		<div class="form-group">
            		Tip diska: <select name = "tip"  v-model ="tip"  class="form-control" id="exampleFormControlSelect1">
@@ -82,7 +85,7 @@ Vue.component('diskovi',{
        		</div>
        		<div class="form-group">
        			<label for = "organizacija">Oganizacija: </label>
-				<select id = "organizacija"  class= "form-control"  v-model ="organizacija" required>
+				<select id = "organizacija"  class= "form-control"  v-model ="organizacija">
 					<option v-for="o in organizacije" :value="o.ime">{{o.ime}}</option>
 				</select>
 		    </div>
@@ -110,7 +113,7 @@ Vue.component('diskovi',{
         </button>
       </div>
       <div class="modal-body">
-        <form id = "izmeniDisk">  
+        <form id = "izmeniDisk" v-if = "korisnik == false">  
        		<div class="form-group">
           		Ime: <input name = "ime"  v-model ="ime"  type="text" class="form-control" required="required">
        		</div>
@@ -145,6 +148,38 @@ Vue.component('diskovi',{
            		<button v-on:click.prevent = "izmeni()" class="btn btn-primary btn-block">Izmeni</button>
        		</div>   
         </form>
+        <form id = "izmeniDisk" v-if= "korisnik == true">  
+       		<div class="form-group">
+          		Ime: <input name = "ime"  v-model ="ime"  type="text" class="form-control" disabled>
+       		</div>
+       		<div class="form-group">
+           		Tip diska: <select name = "tip"  v-model ="tip"  class="form-control" id="exampleFormControlSelect1" disabled>
+          			<option value = "SSD">SSD</option>
+      				<option value = "HDD">HDD</option>
+				</select>
+       		</div>
+       		<div class="form-group">
+          		Kapacitet: <select name = "kapacitet"  v-model ="kapacitet"  class="form-control" id="exampleFormControlSelect1" disabled>
+          			<option value = "125">125</option>
+      				<option value = "250">250</option>
+					<option value = "500">500</option>
+					<option value = "1000">1000</option>
+					<option value = "2000">2000</option>
+				</select>
+       		</div>
+       		<div class="form-group">
+       			<label for = "organizacija">Oganizacija: </label>
+				<select id = "organizacija"  class= "form-control"  v-model ="organizacija" disabled>
+					<option v-for="o in organizacije" :value="o.ime">{{o.ime}}</option>
+				</select>
+		    </div>
+       		<div class="form-group">
+           		<label for = "vm">Virtuelna masina: </label>
+				<select id = "vm"  class= "form-control"  v-model ="virtuelnaMasina" disabled>
+					<option v-for="v in vm" :value="v.ime">{{v.ime}}</option>
+				</select>
+       		</div> 
+        </form>
       </div>
     </div>
   </div>
@@ -156,6 +191,7 @@ Vue.component('diskovi',{
         popuni(d) {
         	console.log("popuni");
         	this.ime = d.ime;
+        	this.staro = d.ime;
         	this.kapacitet = d.kapacitet;
         	this.tip = d.tip;
         	this.organizacija = d.organizacija;
@@ -164,6 +200,7 @@ Vue.component('diskovi',{
         },
         isprazniPolja() {
         	this.ime = "";
+        	this.staro = "";
         	this.kapacitet = "125";
         	this.tip = "HDD";
         	this.organizacija = "";
